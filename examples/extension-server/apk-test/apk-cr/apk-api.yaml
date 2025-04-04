@@ -45,8 +45,8 @@ metadata:
 spec:
   apiName: my-api
   apiType: REST
-  apiVersion: "1.0.0"
-  basePath: "/my-api"
+  apiVersion: 1.0.0
+  basePath: /my-api
   definitionPath: "/api-definition"
   isDefaultVersion: true
   organization:  example-org

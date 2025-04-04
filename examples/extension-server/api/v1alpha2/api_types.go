@@ -36,7 +36,7 @@ type APISpec struct {
 	// APIName is the unique name of the API can be used to uniquely identify an API.
 	// +kubebuilder:validation:MinLength=1
 	// +kubebuilder:validation:MaxLength=60
-	// +kubebuilder:validation:Pattern=`^[^~!@#;:%^*()+={}|\<>"'',&$\[\]\\/]*$`
+	// +kubebuilder:validation:Pattern=`^[^~!@#;:%^*()+={}|\<>"'',&$\[\]\/]*$`
 	APIName string `json:"apiName"`
 
 	// APIType denotes the type of the API. Possible values could be REST, GraphQL
@@ -46,7 +46,7 @@ type APISpec struct {
 	// APIVersion is the version number of the API.
 	// +kubebuilder:validation:MinLength=1
 	// +kubebuilder:validation:MaxLength=30
-	// +kubebuilder:validation:Pattern=`^[^~!@#;:%^*()+={}|\<>"'',&$\[\]\s+\\/]+$`
+	// +kubebuilder:validation:Pattern=`^[^~!@#;:%^*()+={}|\<>"'',&/$\[\]\s+\/]+$`
 	APIVersion string `json:"apiVersion"`
 
 	// BasePath denotes the basepath of the API. e.g: /pet-store-api/1.0.6
@@ -62,7 +62,6 @@ type APISpec struct {
 	Organization string `json:"organization"`
 
 	// Production contains a list of references to HttpRoutes of type HttpRoute.
-	// xref: https://github.com/kubernetes-sigs/gateway-api/blob/main/apis/v1beta1/httproute_types.go
 	// +kubebuilder:validation:MaxItems=1
 	// +nullable
 	Production []EnvConfig `json:"production,omitempty"`
@@ -81,7 +80,6 @@ type APISpec struct {
 	DefinitionFileRef string `json:"definitionFileRef,omitempty"`
 
 	// Sandbox contains a list of references to HttpRoutes of type HttpRoute.
-	// xref: https://github.com/kubernetes-sigs/gateway-api/blob/main/apis/v1beta1/httproute_types.go
 	// +kubebuilder:validation:MaxItems=1
 	// +nullable
 	Sandbox []EnvConfig `json:"sandbox,omitempty"`
@@ -123,7 +121,6 @@ type DeploymentStatus struct {
 	Message string `json:"message,omitempty"`
 
 	// Status denotes the state of the API in its lifecycle.
-	// Possible values could be Accepted, Invalid, Deploy etc.
 	// +kubebuilder:validation:Required
 	Status string `json:"status"`
 

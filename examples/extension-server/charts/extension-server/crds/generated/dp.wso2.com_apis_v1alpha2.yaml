@@ -60,7 +60,7 @@ spec:
                   uniquely identify an API.
                 maxLength: 60
                 minLength: 1
-                pattern: ^[^~!@#;:%^*()+={}|\<>"'',&$\[\]\\/]*$
+                pattern: ^[^~!@#;:%^*()+={}|\<>"'',&$\[\]\/]*$
                 type: string
               apiProperties:
                 description: APIProperties denotes the custom properties of the API.
@@ -88,7 +88,7 @@ spec:
                 description: APIVersion is the version number of the API.
                 maxLength: 30
                 minLength: 1
-                pattern: ^[^~!@#;:%^*()+={}|\<>"'',&$\[\]\s+\\/]+$
+                pattern: ^[^~!@#;:%^*()+={}|\<>"'',&/$\[\]\s+\/]+$
                 type: string
               basePath:
                 description: 'BasePath denotes the basepath of the API. e.g: /pet-store-api/1.0.6'
@@ -116,9 +116,8 @@ spec:
                   API
                 type: string
               production:
-                description: |-
-                  Production contains a list of references to HttpRoutes of type HttpRoute.
-                  xref: https://github.com/kubernetes-sigs/gateway-api/blob/main/apis/v1beta1/httproute_types.go
+                description: Production contains a list of references to HttpRoutes
+                  of type HttpRoute.
                 items:
                   description: EnvConfig contains the environment specific configuration
                   properties:
@@ -134,9 +133,8 @@ spec:
                 nullable: true
                 type: array
               sandbox:
-                description: |-
-                  Sandbox contains a list of references to HttpRoutes of type HttpRoute.
-                  xref: https://github.com/kubernetes-sigs/gateway-api/blob/main/apis/v1beta1/httproute_types.go
+                description: Sandbox contains a list of references to HttpRoutes of
+                  type HttpRoute.
                 items:
                   description: EnvConfig contains the environment specific configuration
                   properties:
@@ -185,9 +183,7 @@ spec:
                       the current state of the API.
                     type: string
                   status:
-                    description: |-
-                      Status denotes the state of the API in its lifecycle.
-                      Possible values could be Accepted, Invalid, Deploy etc.
+                    description: Status denotes the state of the API in its lifecycle.
                     type: string
                   transitionTime:
                     description: TransitionTime represents the last known transition
