@@ -1,0 +1,73 @@
+# apiVersion: gateway.networking.k8s.io/v1
+# kind: HTTPRoute
+# metadata:
+#   name: apk-http-route
+#   namespace: envoy-gateway-system
+# spec:
+#   parentRefs:
+#     - name: eg
+#       namespace: envoy-gateway-system
+#   hostnames:
+#     - "www.example.com"
+#   rules:
+#     - backendRefs:
+#         - group: ""
+#           kind: Service
+#           name: apk-backend  # Changed from "backend"
+#           port: 8080
+#           weight: 1
+#       matches:
+#         - path:
+#             type: PathPrefix
+#             value: /api/v3/  # Accepts any resource starting with /
+#       filters:
+#         - type: ExtensionRef
+#           extensionRef:
+#             group: dp.wso2.com
+#             kind: API
+#             name: apk-api  # Assuming this matches your intended API CR
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: apk-http-route
+  namespace: envoy-gateway-system
+spec:
+  parentRefs:
+    - name: eg
+      namespace: envoy-gateway-system
+  hostnames:
+    - "www.example.com"
+  rules:
+    # Rule 1: Match /api/v3/ directly test the backend
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api/v3/
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: apk-backend
+          port: 8080
+          weight: 1
+    # Rule 2: Catch-all rule with dynamic prefix matching by extension-server
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      filters:
+        - type: ExtensionRef
+          extensionRef:
+            group: dp.wso2.com
+            kind: API
+            name: my-api
+        # - type: URLRewrite
+        #   urlRewrite:
+        #     path:
+        #       type: ReplacePrefixMatch
+        #       replacePrefixMatch: /api/v3/
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: apk-backend
+          port: 8080
+          weight: 1

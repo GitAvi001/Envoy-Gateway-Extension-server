@@ -1,0 +1,22 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: envoy-gateway-extension-access
+rules:
+- apiGroups: ["example.extensions.io"]
+  resources: ["apis", "listenercontextexamples"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: envoy-gateway-extension-binding
+subjects:
+- kind: ServiceAccount
+  name: envoy-gateway
+  namespace: envoy-gateway-system
+roleRef:
+  kind: ClusterRole
+  name: envoy-gateway-extension-access
+  apiGroup: rbac.authorization.k8s.io
