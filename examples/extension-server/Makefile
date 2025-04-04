@@ -26,9 +26,9 @@ generate: $(tools/controller-gen)
 
 # manifests: manifests-v1alpha1
 
-# manifests: manifests-v1alpha2
+manifests: manifests-v1alpha2
 
-manifests: manifests-v1alpha3
+# manifests: manifests-v1alpha3
 
 # manifests: $(tools/controller-gen)
 # 	$(tools/controller-gen) crd:allowDangerousTypes=true paths="./..." output:crd:artifacts:config=charts/extension-server/crds/generated

@@ -30,7 +30,7 @@ spec:
     - jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
-    name: v1alpha3
+    name: v1alpha2
     schema:
       openAPIV3Schema:
         description: API is the Schema for the apis API
@@ -79,11 +79,10 @@ spec:
                 type: array
               apiType:
                 description: APIType denotes the type of the API. Possible values
-                  could be REST, GraphQL, GRPC
+                  could be REST, GraphQL
                 enum:
                 - REST
                 - GraphQL
-                - GRPC
                 type: string
               apiVersion:
                 description: APIVersion is the version number of the API.
@@ -117,9 +116,8 @@ spec:
                   API
                 type: string
               production:
-                description: |-
-                  Production contains a list of references to HttpRoutes of type HttpRoute.
-                  xref: https://github.com/kubernetes-sigs/gateway-api/blob/main/apis/v1beta1/httproute_types.go
+                description: Production contains a list of references to HttpRoutes
+                  of type HttpRoute.
                 items:
                   description: EnvConfig contains the environment specific configuration
                   properties:
@@ -135,9 +133,8 @@ spec:
                 nullable: true
                 type: array
               sandbox:
-                description: |-
-                  Sandbox contains a list of references to HttpRoutes of type HttpRoute.
-                  xref: https://github.com/kubernetes-sigs/gateway-api/blob/main/apis/v1beta1/httproute_types.go
+                description: Sandbox contains a list of references to HttpRoutes of
+                  type HttpRoute.
                 items:
                   description: EnvConfig contains the environment specific configuration
                   properties:
@@ -186,9 +183,7 @@ spec:
                       the current state of the API.
                     type: string
                   status:
-                    description: |-
-                      Status denotes the state of the API in its lifecycle.
-                      Possible values could be Accepted, Invalid, Deploy etc.
+                    description: Status denotes the state of the API in its lifecycle.
                     type: string
                   transitionTime:
                     description: TransitionTime represents the last known transition
