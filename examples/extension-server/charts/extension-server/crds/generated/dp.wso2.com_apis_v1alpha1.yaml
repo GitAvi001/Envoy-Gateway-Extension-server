@@ -30,7 +30,7 @@ spec:
     - jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
-    name: v1alpha2
+    name: v1alpha1
     schema:
       openAPIV3Schema:
         description: API is the Schema for the apis API
@@ -79,10 +79,9 @@ spec:
                 type: array
               apiType:
                 description: APIType denotes the type of the API. Possible values
-                  could be REST, GraphQL
+                  could be REST, GraphQL, Async
                 enum:
                 - REST
-                - GraphQL
                 type: string
               apiVersion:
                 description: APIVersion is the version number of the API.
@@ -95,17 +94,13 @@ spec:
                 pattern: ^[/][a-zA-Z0-9~/_.-]*$
                 type: string
               definitionFileRef:
-                description: DefinitionFileRef contains the definition of the API
-                  in a ConfigMap.
+                description: DefinitionFileRef contains the OpenAPI 3 or Swagger definition
+                  of the API in a ConfigMap.
                 type: string
               definitionPath:
                 default: /api-definition
                 description: DefinitionPath contains the path to expose the API definition.
                 minLength: 1
-                type: string
-              environment:
-                description: Environment denotes the environment of the API.
-                nullable: true
                 type: string
               isDefaultVersion:
                 description: IsDefaultVersion indicates whether this API version should
@@ -116,35 +111,37 @@ spec:
                   API
                 type: string
               production:
-                description: Production contains a list of references to HttpRoutes
-                  of type HttpRoute.
+                description: |-
+                  Production contains a list of references to HttpRoutes of type HttpRoute.
+                  xref: https://github.com/kubernetes-sigs/gateway-api/blob/main/apis/v1beta1/httproute_types.go
                 items:
-                  description: EnvConfig contains the environment specific configuration
+                  description: RouteRef contains the environment specific configuration
                   properties:
-                    routeRefs:
-                      description: RouteRefs denotes the environment of the API.
+                    httpRouteRefs:
+                      description: HTTPRouteRefs denotes the environment of the API.
                       items:
                         type: string
                       type: array
                   required:
-                  - routeRefs
+                  - httpRouteRefs
                   type: object
                 maxItems: 1
                 nullable: true
                 type: array
               sandbox:
-                description: Sandbox contains a list of references to HttpRoutes of
-                  type HttpRoute.
+                description: |-
+                  Sandbox contains a list of references to HttpRoutes of type HttpRoute.
+                  xref: https://github.com/kubernetes-sigs/gateway-api/blob/main/apis/v1beta1/httproute_types.go
                 items:
-                  description: EnvConfig contains the environment specific configuration
+                  description: RouteRef contains the environment specific configuration
                   properties:
-                    routeRefs:
-                      description: RouteRefs denotes the environment of the API.
+                    httpRouteRefs:
+                      description: HTTPRouteRefs denotes the environment of the API.
                       items:
                         type: string
                       type: array
                   required:
-                  - routeRefs
+                  - httpRouteRefs
                   type: object
                 maxItems: 1
                 nullable: true
@@ -183,7 +180,9 @@ spec:
                       the current state of the API.
                     type: string
                   status:
-                    description: Status denotes the state of the API in its lifecycle.
+                    description: |-
+                      Status denotes the state of the API in its lifecycle.
+                      Possible values could be Accepted, Invalid, Deploy etc.
                     type: string
                   transitionTime:
                     description: TransitionTime represents the last known transition

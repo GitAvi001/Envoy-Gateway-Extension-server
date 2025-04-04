@@ -18,42 +18,47 @@
 #   systemAPI: false
 
 
-# ---
-# apiVersion: dp.wso2.com/v1alpha1
-# kind: API
-# metadata:
-#   name: my-api
-#   namespace: envoy-gateway-system
-# spec:
-#   apiName: my-api
-#   apiType: "REST"
-#   apiVersion: 1.0.0
-#   basePath: /my-api/1.0.0
-#   definitionPath: /api-definition
-#   organization: example-org
-#   production:
-#     - httpRouteRefs:
-#         - apk-http-route
-#   isDefaultVersion: false
-#   systemAPI: false
-
 ---
-apiVersion: dp.wso2.com/v1alpha2
+apiVersion: dp.wso2.com/v1alpha1
 kind: API
 metadata:
   name: my-api
+  namespace: envoy-gateway-system
 spec:
   apiName: my-api
-  apiType: REST
+  apiType: "REST"
   apiVersion: 1.0.0
-  basePath: /my-api
-  definitionPath: "/api-definition"
-  isDefaultVersion: true
-  organization:  example-org
-  systemAPI: false
+  basePath: /my-api/1.0.0
+  definitionPath: /api-definition
+  organization: example-org
   production:
-    - routeRefs:
+    - httpRouteRefs:
         - apk-http-route
+  isDefaultVersion: false
+  systemAPI: false
+
+# ---
+# apiVersion: dp.wso2.com/v1alpha2
+# kind: API
+# metadata:
+#   name: my-api
+# spec:
+#   apiName: my-api
+#   apiType: REST
+#   apiVersion: 1.0.0
+#   basePath: /my-api
+#   definitionPath: "/api-definition"
+#   isDefaultVersion: true
+#   organization:  example-org
+#   systemAPI: false
+#   production:
+#     - routeRefs:
+#         - apk-http-route
+#   apiProperties:
+#     - name: "prop1"
+#       value: "value1"
+#     - name: "prop2"
+#       value: "value2"
 
 # ---
 # apiVersion: dp.wso2.com/v1alpha3
