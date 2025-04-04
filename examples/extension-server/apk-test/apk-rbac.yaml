@@ -24,56 +24,56 @@
 #   apiGroup: rbac.authorization.k8s.io
 
 #When group name is dp.wso2.com(dp.wso2.com_apis_v1.yaml)
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: envoy-gateway
-rules:
-- apiGroups: ["dp.wso2.com"]
-  resources: ["apis"]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: envoy-gateway-dp-wso2-binding
-subjects:
-- kind: ServiceAccount
-  name: envoy-gateway
-  namespace: envoy-gateway-system
-roleRef:
-  kind: ClusterRole
-  name: envoy-gateway
-  apiGroup: rbac.authorization.k8s.io  
-
-#Combined CRD applying
+# ---
 # apiVersion: rbac.authorization.k8s.io/v1
 # kind: ClusterRole
 # metadata:
 #   name: envoy-gateway
 # rules:
-# - apiGroups: ["gateway.networking.k8s.io"]
-#   resources: ["gateways", "httproutes", "gatewayclasses"]
-#   verbs: ["get", "list", "watch", "update", "patch"]
 # - apiGroups: ["dp.wso2.com"]
-#   resources: ["apis", "apis/status"]
-#   verbs: ["get", "list", "watch", "update", "patch"]
-# - apiGroups: [""]
-#   resources: ["secrets", "services"]
-#   verbs: ["get", "list", "watch"]
+#   resources: ["apis"]
+#   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 
 # ---
 # apiVersion: rbac.authorization.k8s.io/v1
 # kind: ClusterRoleBinding
 # metadata:
-#   name: envoy-gateway
-# roleRef:
-#   apiGroup: rbac.authorization.k8s.io
-#   kind: ClusterRole
-#   name: envoy-gateway
+#   name: envoy-gateway-dp-wso2-binding
 # subjects:
 # - kind: ServiceAccount
 #   name: envoy-gateway
 #   namespace: envoy-gateway-system
+# roleRef:
+#   kind: ClusterRole
+#   name: envoy-gateway
+#   apiGroup: rbac.authorization.k8s.io  
+
+#Combined CRD applying
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: envoy-gateway
+rules:
+- apiGroups: ["gateway.networking.k8s.io"]
+  resources: ["gateways", "httproutes", "gatewayclasses"]
+  verbs: ["get", "list", "watch", "update", "patch"]
+- apiGroups: ["dp.wso2.com"]
+  resources: ["apis", "apis/status"]
+  verbs: ["get", "list", "watch", "update", "patch"]
+- apiGroups: [""]
+  resources: ["secrets", "services"]
+  verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: envoy-gateway
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: envoy-gateway
+subjects:
+- kind: ServiceAccount
+  name: envoy-gateway
+  namespace: envoy-gateway-system

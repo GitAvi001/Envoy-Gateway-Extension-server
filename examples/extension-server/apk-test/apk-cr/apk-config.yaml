@@ -14,9 +14,6 @@ data:
       policyResources:
       # - group: example.extensions.io
       #   version: v1alpha1
-      #   kind: ListenerContextExample
-      # - group: dp.wso2.com 
-      #   version: v1alpha1
       #   kind: API     
       # - group: dp.wso2.com 
       #   version: v1alpha3
@@ -28,12 +25,12 @@ data:
       # - group: example.extensions.io
       #   version: v1alpha1
       #   kind: API 
-      # - group: dp.wso2.com 
-      #   version: v1alpha1
-      #   kind: API
-      # - group: dp.wso2.com 
-      #   version: v1alpha2
-      #   kind: API  
+      - group: dp.wso2.com 
+        version: v1alpha1
+        kind: API
+      - group: dp.wso2.com 
+        version: v1alpha2
+        kind: API  
       - group: dp.wso2.com 
         version: v1alpha3
         kind: API                
