@@ -24,9 +24,9 @@ generate: $(tools/controller-gen)
 # Use manifests-combined as the default manifests target
 # manifests: manifests-combined
 
-# manifests: manifests-v1alpha1
+manifests: manifests-v1alpha1
 
-manifests: manifests-v1alpha2
+# manifests: manifests-v1alpha2
 
 # manifests: manifests-v1alpha3
 
