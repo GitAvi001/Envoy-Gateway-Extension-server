@@ -5,6 +5,135 @@
 // The full text of the Apache license is available in the LICENSE file at
 // the root of the repo.
 
+// package extensionserver
+
+// import (
+// 	"context"
+// 	"encoding/json"
+// 	"fmt"
+// 	"log/slog"
+
+// 	pb "github.com/envoyproxy/gateway/proto/extension"
+// 	routev3 "github.com/envoyproxy/go-control-plane/envoy/config/route/v3"
+
+// 	"github.com/envoyproxy/gateway/examples/extension-server/api/v1alpha1"
+// )
+
+// type Server struct {
+// 	pb.UnimplementedEnvoyGatewayExtensionServer
+
+// 	log *slog.Logger
+// }
+
+// func New(logger *slog.Logger) *Server {
+// 	logger.Info("extension-server starting up")
+// 	return &Server{
+// 		log: logger,
+// 	}
+// }
+
+// func (s *Server) PostRouteModify(ctx context.Context, req *pb.PostRouteModifyRequest) (*pb.PostRouteModifyResponse, error) {
+// 	s.log.Info("postRouteModify callback was invoked")
+
+// 	// Log the incoming route for debugging
+// 	s.log.Info("Incoming route", slog.Any("route", req.Route))
+
+// 	basePath := ""
+// 	httpRouteName := ""
+
+// 	// Extract basePath and HTTPRoute name from the API CR
+// 	for _, ext := range req.PostRouteContext.ExtensionResources {
+// 		var api v1alpha1.API
+// 		s.log.Info("extension resource", slog.String("extension", string(ext.GetUnstructuredBytes())))
+// 		if err := json.Unmarshal(ext.GetUnstructuredBytes(), &api); err != nil {
+// 			s.log.Error("failed to unmarshal the extension", slog.String("error", err.Error()))
+// 			continue
+// 		}
+// 		// Extract basePath and HTTPRoute name from the API CR
+// 		basePath = api.Spec.BasePath
+// 		if len(api.Spec.Production) > 0 && len(api.Spec.Production[0].HTTPRouteRefs) > 0 {
+// 			httpRouteName = api.Spec.Production[0].HTTPRouteRefs[0]
+// 		}
+// 		s.log.Info(fmt.Sprintf("Extracted basePath: %s and HTTPRoute name: %s from API: %s", basePath, httpRouteName, api.ObjectMeta.Name))
+// 		break // Assuming we only need the first matching API CR
+// 	}
+
+// 	if basePath == "" || httpRouteName == "" {
+// 		s.log.Info("Missing basePath or HTTPRoute name, skipping modification")
+// 		return &pb.PostRouteModifyResponse{
+// 			Route: req.Route,
+// 		}, nil
+// 	}
+
+// 	r := req.Route
+// 	if r.Match != nil {
+// 		switch r.Match.PathSpecifier.(type) {
+// 		case *routev3.RouteMatch_Prefix:
+// 			s.log.Info("Path specifier is a prefix")
+// 			originalPrefix := r.Match.PathSpecifier.(*routev3.RouteMatch_Prefix).Prefix
+// 			// Construct the new prefix with basePath and HTTPRoute name
+// 			newPrefix := fmt.Sprintf("%s/%s%s", basePath, httpRouteName, originalPrefix)
+// 			r.Match.PathSpecifier = &routev3.RouteMatch_Prefix{
+// 				Prefix: newPrefix,
+// 			}
+// 			// Add rewrite to strip "/<basePath>/<http-route-name>" and send the original prefix to the backend
+// 			if routeAction, ok := r.Action.(*routev3.Route_Route); ok {
+// 				routeAction.Route.PrefixRewrite = originalPrefix
+// 			} else {
+// 				r.Action = &routev3.Route_Route{
+// 					Route: &routev3.RouteAction{
+// 						PrefixRewrite: originalPrefix, // Strips "/my-api/apk-http-route" to "/"
+// 					},
+// 				}
+// 			}
+// 			s.log.Info(fmt.Sprintf("Matched HTTPRoute %s, applying prefix %s with rewrite to %s", httpRouteName, newPrefix, originalPrefix))
+// 		default:
+// 			s.log.Info("Path specifier is not handled", slog.Any("pathSpecifier", r.Match.PathSpecifier))
+// 		}
+// 	} else {
+// 		s.log.Info("Route match is nil, skipping modification")
+// 	}
+
+// 	// Log the modified route for debugging
+// 	s.log.Info("Modified route", slog.Any("route", r))
+
+// 	return &pb.PostRouteModifyResponse{
+// 		Route: r,
+// 	}, nil
+// }
+
+// func (s *Server) PostVirtualHostModify(ctx context.Context, req *pb.PostVirtualHostModifyRequest) (*pb.PostVirtualHostModifyResponse, error) {
+// 	s.log.Info("PostVirtualHostModify callback was invoked")
+// 	// Log the virtual host for debugging
+// 	s.log.Info("VirtualHost", slog.Any("virtualHost", req.VirtualHost))
+// 	return &pb.PostVirtualHostModifyResponse{
+// 		VirtualHost: req.VirtualHost,
+// 	}, nil
+// }
+
+// func (s *Server) PostTranslateModify(ctx context.Context, req *pb.PostTranslateModifyRequest) (*pb.PostTranslateModifyResponse, error) {
+// 	s.log.Info("PostTranslateModify callback was invoked")
+// 	return &pb.PostTranslateModifyResponse{
+// 		Clusters: req.Clusters,
+// 		Secrets:  req.Secrets,
+// 	}, nil
+// }
+
+// func (s *Server) PostHTTPListenerModify(ctx context.Context, req *pb.PostHTTPListenerModifyRequest) (*pb.PostHTTPListenerModifyResponse, error) {
+// 	s.log.Info("postHTTPListenerModify callback was invoked")
+// 	// Log the listener for debugging
+// 	s.log.Info("Listener", slog.Any("listener", req.Listener))
+// 	return &pb.PostHTTPListenerModifyResponse{
+// 		Listener: req.Listener,
+// 	}, nil
+// }
+
+/*extract basePath and receive the response (combined CRD apply)*/
+// Copyright Envoy Gateway Authors
+// SPDX-License-Identifier: Apache-2.0
+// The full text of the Apache license is available in the LICENSE file at
+// the root of the repo.
+
 package extensionserver
 
 import (
@@ -35,24 +164,36 @@ func New(logger *slog.Logger) *Server {
 func (s *Server) PostRouteModify(ctx context.Context, req *pb.PostRouteModifyRequest) (*pb.PostRouteModifyResponse, error) {
 	s.log.Info("postRouteModify callback was invoked")
 
-	// Log the incoming route for debugging
-	s.log.Info("Incoming route", slog.Any("route", req.Route))
+	// Log the entire request for debugging
+	s.log.Info("PostRouteModify request", slog.Any("request", req))
+
+	// Log the extension resources
+	s.log.Info("Extension resources", slog.Any("resources", req.PostRouteContext.ExtensionResources))
 
 	basePath := ""
 	httpRouteName := ""
 
 	// Extract basePath and HTTPRoute name from the API CR
-	for _, ext := range req.PostRouteContext.ExtensionResources {
+	for i, ext := range req.PostRouteContext.ExtensionResources {
 		var api v1alpha1.API
-		s.log.Info("extension resource", slog.String("extension", string(ext.GetUnstructuredBytes())))
+		s.log.Info("Processing extension resource", slog.Int("index", i), slog.String("extension", string(ext.GetUnstructuredBytes())))
 		if err := json.Unmarshal(ext.GetUnstructuredBytes(), &api); err != nil {
 			s.log.Error("failed to unmarshal the extension", slog.String("error", err.Error()))
 			continue
 		}
+
+		// Log the unmarshaled API object
+		s.log.Info("Unmarshaled API", slog.Any("api", api))
+
+		// Log the Production field specifically
+		s.log.Info("API Production field", slog.Any("production", api.Spec.Production))
+
 		// Extract basePath and HTTPRoute name from the API CR
 		basePath = api.Spec.BasePath
 		if len(api.Spec.Production) > 0 && len(api.Spec.Production[0].HTTPRouteRefs) > 0 {
 			httpRouteName = api.Spec.Production[0].HTTPRouteRefs[0]
+		} else {
+			s.log.Warn("No HTTPRouteRefs found in Production field")
 		}
 		s.log.Info(fmt.Sprintf("Extracted basePath: %s and HTTPRoute name: %s from API: %s", basePath, httpRouteName, api.ObjectMeta.Name))
 		break // Assuming we only need the first matching API CR
@@ -94,7 +235,7 @@ func (s *Server) PostRouteModify(ctx context.Context, req *pb.PostRouteModifyReq
 		s.log.Info("Route match is nil, skipping modification")
 	}
 
-	// Log the modified route for debugging
+	// Log the modified route
 	s.log.Info("Modified route", slog.Any("route", r))
 
 	return &pb.PostRouteModifyResponse{
@@ -127,164 +268,6 @@ func (s *Server) PostHTTPListenerModify(ctx context.Context, req *pb.PostHTTPLis
 		Listener: req.Listener,
 	}, nil
 }
-
-/*extract basePath and receive the response (combined CRD apply)*/
-// Copyright Envoy Gateway Authors
-// SPDX-License-Identifier: Apache-2.0
-// The full text of the Apache license is available in the LICENSE file at
-// the root of the repo.
-
-// package extensionserver
-
-// import (
-// 	"context"
-// 	"encoding/json"
-// 	"fmt"
-// 	"log/slog"
-
-// 	pb "github.com/envoyproxy/gateway/proto/extension"
-// 	routev3 "github.com/envoyproxy/go-control-plane/envoy/config/route/v3"
-
-// 	"github.com/envoyproxy/gateway/examples/extension-server/api/v1alpha1"
-// 	"github.com/envoyproxy/gateway/examples/extension-server/api/v1alpha2"
-// )
-
-// type Server struct {
-// 	pb.UnimplementedEnvoyGatewayExtensionServer
-
-// 	log *slog.Logger
-// }
-
-// func New(logger *slog.Logger) *Server {
-// 	logger.Info("extension-server starting up")
-// 	return &Server{
-// 		log: logger,
-// 	}
-// }
-
-// func (s *Server) PostRouteModify(ctx context.Context, req *pb.PostRouteModifyRequest) (*pb.PostRouteModifyResponse, error) {
-// 	s.log.Info("postRouteModify callback was invoked")
-
-// 	// Log the entire request for debugging
-// 	s.log.Info("PostRouteModify request", slog.Any("request", req))
-
-// 	// Log the extension resources
-// 	s.log.Info("Extension resources", slog.Any("resources", req.PostRouteContext.ExtensionResources))
-
-// 	basePath := ""
-// 	httpRouteName := ""
-
-// 	// Extract basePath and HTTPRoute name from the API CR
-// 	for i, ext := range req.PostRouteContext.ExtensionResources {
-// 		s.log.Info("Processing extension resource", slog.Int("index", i), slog.String("extension", string(ext.GetUnstructuredBytes())))
-
-// 		// First, try unmarshaling as v1alpha1.API
-// 		var apiV1alpha1 v1alpha1.API
-// 		err := json.Unmarshal(ext.GetUnstructuredBytes(), &apiV1alpha1)
-// 		if err == nil && apiV1alpha1.APIVersion == "dp.wso2.com/v1alpha1" {
-// 			s.log.Info("Unmarshaled API as v1alpha1", slog.Any("api", apiV1alpha1))
-// 			s.log.Info("API Production field", slog.Any("production", apiV1alpha1.Spec.Production))
-
-// 			// Extract basePath and HTTPRoute name from v1alpha1 API
-// 			basePath = apiV1alpha1.Spec.BasePath
-// 			if len(apiV1alpha1.Spec.Production) > 0 && len(apiV1alpha1.Spec.Production[0].HTTPRouteRefs) > 0 {
-// 				httpRouteName = apiV1alpha1.Spec.Production[0].HTTPRouteRefs[0]
-// 			} else {
-// 				s.log.Warn("No HTTPRouteRefs found in Production field (v1alpha1)")
-// 			}
-// 			s.log.Info(fmt.Sprintf("Extracted basePath: %s and HTTPRoute name: %s from API: %s", basePath, httpRouteName, apiV1alpha1.ObjectMeta.Name))
-// 		} else {
-// 			// If v1alpha1 unmarshaling fails or version doesn't match, try v1alpha2.API
-// 			var apiV1alpha2 v1alpha2.API
-// 			if err := json.Unmarshal(ext.GetUnstructuredBytes(), &apiV1alpha2); err != nil {
-// 				s.log.Error("failed to unmarshal the extension as v1alpha2", slog.String("error", err.Error()))
-// 				continue
-// 			}
-// 			s.log.Info("Unmarshaled API as v1alpha2", slog.Any("api", apiV1alpha2))
-// 			s.log.Info("API Production field", slog.Any("production", apiV1alpha2.Spec.Production))
-
-// 			// Extract basePath and HTTPRoute name from v1alpha2 API
-// 			basePath = apiV1alpha2.Spec.BasePath
-// 			if len(apiV1alpha2.Spec.Production) > 0 && len(apiV1alpha2.Spec.Production[0].RouteRefs) > 0 {
-// 				httpRouteName = apiV1alpha2.Spec.Production[0].RouteRefs[0]
-// 			} else {
-// 				s.log.Warn("No RouteRefs found in Production field (v1alpha2)")
-// 			}
-// 			s.log.Info(fmt.Sprintf("Extracted basePath: %s and HTTPRoute name: %s from API: %s", basePath, httpRouteName, apiV1alpha2.ObjectMeta.Name))
-// 		}
-
-// 		break // Assuming we only need the first matching API CR
-// 	}
-
-// 	if basePath == "" || httpRouteName == "" {
-// 		s.log.Info("Missing basePath or HTTPRoute name, skipping modification")
-// 		return &pb.PostRouteModifyResponse{
-// 			Route: req.Route,
-// 		}, nil
-// 	}
-
-// 	r := req.Route
-// 	if r.Match != nil {
-// 		switch r.Match.PathSpecifier.(type) {
-// 		case *routev3.RouteMatch_Prefix:
-// 			s.log.Info("Path specifier is a prefix")
-// 			originalPrefix := r.Match.PathSpecifier.(*routev3.RouteMatch_Prefix).Prefix
-// 			// Construct the new prefix with basePath and HTTPRoute name
-// 			newPrefix := fmt.Sprintf("%s/%s%s", basePath, httpRouteName, originalPrefix)
-// 			r.Match.PathSpecifier = &routev3.RouteMatch_Prefix{
-// 				Prefix: newPrefix,
-// 			}
-// 			// Add rewrite to strip "/<basePath>/<http-route-name>" and send the original prefix to the backend
-// 			if routeAction, ok := r.Action.(*routev3.Route_Route); ok {
-// 				routeAction.Route.PrefixRewrite = originalPrefix
-// 			} else {
-// 				r.Action = &routev3.Route_Route{
-// 					Route: &routev3.RouteAction{
-// 						PrefixRewrite: originalPrefix, // Strips "/my-api/apk-http-route" to "/"
-// 					},
-// 				}
-// 			}
-// 			s.log.Info(fmt.Sprintf("Matched HTTPRoute %s, applying prefix %s with rewrite to %s", httpRouteName, newPrefix, originalPrefix))
-// 		default:
-// 			s.log.Info("Path specifier is not handled", slog.Any("pathSpecifier", r.Match.PathSpecifier))
-// 		}
-// 	} else {
-// 		s.log.Info("Route match is nil, skipping modification")
-// 	}
-
-// 	// Log the modified route
-// 	s.log.Info("Modified route", slog.Any("route", r))
-
-// 	return &pb.PostRouteModifyResponse{
-// 		Route: r,
-// 	}, nil
-// }
-
-// func (s *Server) PostVirtualHostModify(ctx context.Context, req *pb.PostVirtualHostModifyRequest) (*pb.PostVirtualHostModifyResponse, error) {
-// 	s.log.Info("PostVirtualHostModify callback was invoked")
-// 	// Log the virtual host for debugging
-// 	s.log.Info("VirtualHost", slog.Any("virtualHost", req.VirtualHost))
-// 	return &pb.PostVirtualHostModifyResponse{
-// 		VirtualHost: req.VirtualHost,
-// 	}, nil
-// }
-
-// func (s *Server) PostTranslateModify(ctx context.Context, req *pb.PostTranslateModifyRequest) (*pb.PostTranslateModifyResponse, error) {
-// 	s.log.Info("PostTranslateModify callback was invoked")
-// 	return &pb.PostTranslateModifyResponse{
-// 		Clusters: req.Clusters,
-// 		Secrets:  req.Secrets,
-// 	}, nil
-// }
-
-// func (s *Server) PostHTTPListenerModify(ctx context.Context, req *pb.PostHTTPListenerModifyRequest) (*pb.PostHTTPListenerModifyResponse, error) {
-// 	s.log.Info("postHTTPListenerModify callback was invoked")
-// 	// Log the listener for debugging
-// 	s.log.Info("Listener", slog.Any("listener", req.Listener))
-// 	return &pb.PostHTTPListenerModifyResponse{
-// 		Listener: req.Listener,
-// 	}, nil
-// }
 
 /*Implementation - extract context path and receives the response (example.extensions.io_apis cr apply) */
 
