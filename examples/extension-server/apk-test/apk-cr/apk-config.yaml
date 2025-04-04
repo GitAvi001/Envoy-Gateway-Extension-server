@@ -28,12 +28,12 @@ data:
       # - group: dp.wso2.com 
       #   version: v1alpha1
       #   kind: API
-      # - group: dp.wso2.com 
-      #   version: v1alpha2
-      #   kind: API  
       - group: dp.wso2.com 
-        version: v1alpha3
-        kind: API                
+        version: v1alpha2
+        kind: API  
+      # - group: dp.wso2.com 
+      #   version: v1alpha3
+      #   kind: API                
       hooks:
         xdsTranslator:
           post:

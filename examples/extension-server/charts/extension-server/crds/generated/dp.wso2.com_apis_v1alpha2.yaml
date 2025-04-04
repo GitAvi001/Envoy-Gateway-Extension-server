@@ -30,7 +30,7 @@ spec:
     - jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
-    name: v1alpha3
+    name: v1alpha2
     schema:
       openAPIV3Schema:
         description: API is the Schema for the apis API
@@ -60,7 +60,7 @@ spec:
                   uniquely identify an API.
                 maxLength: 60
                 minLength: 1
-                pattern: ^[^~!@#;:%^*()+={}|\<>"'',&$\[\]\/]*$
+                pattern: ^[^~!@#;:%^*()+={}|\<>"'',&$\[\]\\/]*$
                 type: string
               apiProperties:
                 description: APIProperties denotes the custom properties of the API.
@@ -79,17 +79,16 @@ spec:
                 type: array
               apiType:
                 description: APIType denotes the type of the API. Possible values
-                  could be REST, GraphQL, GRPC
+                  could be REST, GraphQL
                 enum:
                 - REST
                 - GraphQL
-                - GRPC
                 type: string
               apiVersion:
                 description: APIVersion is the version number of the API.
                 maxLength: 30
                 minLength: 1
-                pattern: ^[^~!@#;:%^*()+={}|\<>"'',&/$\[\]\s+\/]+$
+                pattern: ^[^~!@#;:%^*()+={}|\<>"'',&$\[\]\s+\\/]+$
                 type: string
               basePath:
                 description: 'BasePath denotes the basepath of the API. e.g: /pet-store-api/1.0.6'
