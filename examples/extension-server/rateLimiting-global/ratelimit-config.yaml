@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ratelimit-config
+  namespace: envoy-gateway-system
+data:
+  ratelimit-config.yaml: |
+    domain: envoy-gateway
+    descriptors:
+      - key: generic_key
+        rate_limit:
+          unit: minute
+          requests_per_unit: 10
+    redis:
+      url: "redis://redis.envoy-gateway-system.svc.cluster.local:6379"
+      type: single
