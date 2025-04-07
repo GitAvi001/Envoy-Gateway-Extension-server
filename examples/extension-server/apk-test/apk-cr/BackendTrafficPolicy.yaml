@@ -1,0 +1,17 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+  name: gateway-rate-limit
+  namespace: envoy-gateway-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: eg
+  rateLimit:
+    type: Local #Checking with local rate limiting
+    local:
+      rules:
+        - limit:
+            requests: 10
+            unit: Minute
