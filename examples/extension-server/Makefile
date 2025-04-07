@@ -9,10 +9,12 @@ $(tools.bindir)/%: $(tools.srcdir)/%/pin.go $(tools.srcdir)/%/go.mod
 clean: tools.clean
 	rm -fr bin
 
+#1. make build to build the extension server locally.
 build: generate manifests
 	mkdir -p bin
 	CGO_ENABLED=0 go build -o bin/extension-server ./cmd/extension-server
 
+#2. make image to tag the imagea and push the locally build image to docker hub. 
 image: build
 	docker build -t extension-server:latest1 -f tools/docker/extension-server/Dockerfile .
 	docker tag extension-server:latest1 avidocker692/extension-server:latest1
@@ -33,6 +35,7 @@ manifests: manifests-v1alpha1
 # manifests: $(tools/controller-gen)
 # 	$(tools/controller-gen) crd:allowDangerousTypes=true paths="./..." output:crd:artifacts:config=charts/extension-server/crds/generated
 
+#3. make manifests commands to generate CRDs
 # Generate a single CRD only for v1alpha1 version
 manifests-v1alpha1: $(tools/controller-gen)
 	$(tools/controller-gen) crd:allowDangerousTypes=true paths="./api/v1alpha1" output:crd:artifacts:config=charts/extension-server/crds/generated
