@@ -1,0 +1,74 @@
+# ---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: eg
+spec:
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: eg
+spec:
+  gatewayClassName: eg
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: apk-backend  # Changed from "backend"
+  namespace: envoy-gateway-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apk-backend  # Changed from "backend"
+  namespace: envoy-gateway-system
+  labels:
+    app: apk-backend  # Changed from "backend"
+    service: apk-backend  # Changed from "backend"
+spec:
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: apk-backend  # Changed from "backend"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apk-backend  # Changed from "backend"
+  namespace: envoy-gateway-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apk-backend  # Changed from "backend"
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: apk-backend  # Changed from "backend"
+        version: v1
+    spec:
+      serviceAccountName: apk-backend  # Changed from "backend"
+      containers:
+        - image: swaggerapi/petstore3:latest
+          imagePullPolicy: IfNotPresent
+          name: apk-backend  # Changed from "backend"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
