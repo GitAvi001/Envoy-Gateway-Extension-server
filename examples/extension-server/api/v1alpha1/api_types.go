@@ -183,7 +183,7 @@ type APISpec struct {
 	// +kubebuilder:validation:Pattern=`^[^~!@#;:%^*()+={}|\<>"'',&$\[\]\/]*$`
 	APIName string `json:"apiName"`
 
-	// APIType denotes the type of the API. Possible values could be REST, GraphQL, Async
+	// APIType denotes the type of the API. Possible values could be REST, GraphQL, SSE, Async
 	// +kubebuilder:validation:Enum=REST
 	APIType string `json:"apiType"`
 
