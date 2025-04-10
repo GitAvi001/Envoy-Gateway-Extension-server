@@ -82,6 +82,8 @@ spec:
                   could be REST, GraphQL, SSE, Async
                 enum:
                 - REST
+                - GraphQL
+                - SSE
                 type: string
               apiVersion:
                 description: APIVersion is the version number of the API.

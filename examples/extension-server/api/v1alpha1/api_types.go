@@ -184,7 +184,7 @@ type APISpec struct {
 	APIName string `json:"apiName"`
 
 	// APIType denotes the type of the API. Possible values could be REST, GraphQL, SSE, Async
-	// +kubebuilder:validation:Enum=REST
+	// +kubebuilder:validation:Enum=REST;GraphQL;SSE
 	APIType string `json:"apiType"`
 
 	// APIVersion is the version number of the API.
