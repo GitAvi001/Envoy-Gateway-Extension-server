@@ -28,6 +28,7 @@ generate: $(tools/controller-gen)
 
 manifests: manifests-v1alpha1
 
+#remove the comment lines to generate desired CRD 
 # manifests: manifests-v1alpha2
 
 # manifests: manifests-v1alpha3
