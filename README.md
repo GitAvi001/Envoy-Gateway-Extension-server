@@ -7,9 +7,9 @@ Before sending the desired xDS configurations to the envoy proxy, envoy gateway 
 
 Below given diagram shows how this was done using envoy gateway and it's extension server.
 
-[!Alt text](images/Extension%20server%20architecture.png)
+[!Extension-server-architecture](images/Extension-server-architecture.png)
 
-[!Alt text](images/extension-server.png)
+[!Extension-server-API-invoking-process](images/extension-server.png)
 
 In this project I used Rancher desktop to use kubernetes and Docker. This can be done also using minikube.
 
