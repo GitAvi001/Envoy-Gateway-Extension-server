@@ -136,14 +136,16 @@ curl -v -H "Host: www.example.com" "http://localhost:8080/apk-http-route/api/v3/
 ## Steps - Edit server.go and redeploy extension server
 To extract the basePath or context path correctly from the applied API CR and map to the correct backend resource server.go needed to edit correctly.
 
-After editing the server.go correctly extension-server should redpoly to the kubernetes cluster.
+After editing the server.go correctly extension-server should redpoly to the kubernetes cluster make sure to enable execute permissions for the script file.
 
 For testing purpose server.go already modified to extract basePath and HTTPRoute from applied CR dynamically.
 
 ```bash
 i. cd ./examples/extension-server
 
-ii. ./deploy-server.sh
+ii. chmod +x deploy-server.sh
+
+iii. ./deploy-server.sh
 ```
 
 ## Steps - Invoke API
