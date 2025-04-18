@@ -13,6 +13,6 @@ spec:
   timeout:
     http:
       connectionIdleTimeout: 0s # Disable idle timeout for SSE traffic only
-  # http2: # Optional, included for completeness
+  # http2:
   #   initialStreamWindowSize: 14000
   #   maxConcurrentStreams: 100
