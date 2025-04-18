@@ -9,7 +9,7 @@ import (
 )
 
 type Client struct {
-	messageChan chan string
+	messageChain chan string
 }
 
 type Broker struct {
@@ -33,7 +33,7 @@ func (b *Broker) AddClient(client *Client) {
 func (b *Broker) RemoveClient(client *Client) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	close(client.messageChan)
+	close(client.messageChain)
 	delete(b.clients, client)
 	log.Printf("Client removed; total clients: %d", len(b.clients))
 }
@@ -48,7 +48,7 @@ func main() {
 		w.Header().Set("Cache-Control", "no-cache")
 		w.Header().Set("Connection", "keep-alive")
 
-		client := &Client{messageChan: make(chan string, 10)}
+		client := &Client{messageChain: make(chan string, 10)}
 		timeBroker.AddClient(client)
 		defer timeBroker.RemoveClient(client)
 
@@ -91,7 +91,7 @@ func main() {
 		w.Header().Set("Cache-Control", "no-cache")
 		w.Header().Set("Connection", "keep-alive")
 
-		client := &Client{messageChan: make(chan string, 10)}
+		client := &Client{messageChain: make(chan string, 10)}
 		stockBroker.AddClient(client)
 		defer stockBroker.RemoveClient(client)
 

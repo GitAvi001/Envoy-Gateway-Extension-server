@@ -24,9 +24,9 @@ generate: $(tools/controller-gen)
 	$(tools/controller-gen) object:headerFile="$(tools.dir)/boilerplate.generatego.txt",year=2024 paths="{./api/...}"
 
 # Use manifests-combined as the default manifests target
-# manifests: manifests-combined
+manifests: manifests-combined
 
-manifests: manifests-v1alpha1
+# manifests: manifests-v1alpha1
 
 #remove the comment lines to generate desired CRD 
 # manifests: manifests-v1alpha2
