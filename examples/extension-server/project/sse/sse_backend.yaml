@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sse-server
+  namespace: envoy-gateway-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sse-server
+  template:
+    metadata:
+      labels:
+        app: sse-server
+    spec:
+      containers:
+      - name: sse-server
+        image: avidocker692/go-sse:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: REDIS_ADDR
+          value: "redis:6379"
+        - name: PORT
+          value: "8080"
+        resources:
+          limits:
+            cpu: "1"
+            memory: "512Mi"
+          requests:
+            cpu: "0.5"
+            memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sse-server
+  namespace: envoy-gateway-system
+spec:
+  selector:
+    app: sse-server
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
