@@ -12,22 +12,20 @@ spec:
   - matches:
     - path:
         type: PathPrefix
-        value: /time-stream
-    backendRefs:
-    - name: sse-server
-      port: 8081
-    timeouts:
-      request: 0s # Infinite timeout for persistent SSE connections
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /stock-market-stream   
+        value: /sse/events
     filters:
-        - type: ExtensionRef
-          extensionRef:
-            group: dp.wso2.com
-            kind: API
-            name: sse-api
+    - type: RequestHeaderModifier
+      requestHeaderModifier:
+        set:
+        - name: x-path-rewrite
+          value: /events
+    - type: ExtensionRef
+      extensionRef:
+        group: dp.wso2.com
+        kind: API
+        name: sse-api
     backendRefs:
     - name: sse-server
-      port: 8081
+      port: 8080
+    timeouts:
+      request: 0s

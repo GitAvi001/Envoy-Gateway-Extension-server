@@ -1,13 +1,11 @@
-# Build stage
-FROM golang:1.23.3 AS builder
+FROM golang:1.23 AS builder
 WORKDIR /app
 COPY . .
 RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux go build -o sse-server main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o sse-server .
 
-# Final stage
 FROM alpine:latest
-WORKDIR /root/
+WORKDIR /app
 COPY --from=builder /app/sse-server .
-EXPOSE 8081
+EXPOSE 8080
 CMD ["./sse-server"]

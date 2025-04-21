@@ -21,7 +21,7 @@ import (
 
 type Server struct {
 	pb.UnimplementedEnvoyGatewayExtensionServer
-
+	
 	log *slog.Logger
 }
 
