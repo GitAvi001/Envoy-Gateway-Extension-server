@@ -62,10 +62,9 @@ manifests-v1alpha3: $(tools/controller-gen)
 # 	# Rename the generated CRD to dp.wso2.com_apis_v1alpha4.yaml
 # 	mv charts/extension-server/crds/generated/dp.wso2.com_apis.yaml charts/extension-server/crds/generated/dp.wso2.com_apis_v1alpha4.yaml
 
-#Generate a single CRD for v1alpha1,v1alpha2 and v1alpha3
+#Generate a single CRD for v1alpha1,v1alpha2 and v1alpha3 combined
 manifests-combined: $(tools/controller-gen)
 	$(tools/controller-gen) crd:allowDangerousTypes=true paths="./api/v1alpha1;./api/v1alpha2;./api/v1alpha3" output:crd:artifacts:config=charts/extension-server/crds/generated
-
 
 # generate-v1alpha1: $(tools/controller-gen)
 # 	$(tools/controller-gen) object:headerFile="$(tools.dir)/boilerplate.generatego.txt",year=2024 paths="{./api/v1alpha1/}"	
