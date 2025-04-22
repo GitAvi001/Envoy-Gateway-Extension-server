@@ -28,4 +28,4 @@ spec:
     - name: sse-server
       port: 8080
     timeouts:
-      request: 0s
+      request: 0s #timeout=0s apply to all valid routes in the http route
