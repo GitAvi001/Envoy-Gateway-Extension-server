@@ -1,4 +1,4 @@
-# Envoy Gateway and Extension-server
+# Envoy Gateway Extension server design 
 
 This project implement a REST API invocation and sending the backend response process by extending envoy gateway using extension server.
 
@@ -25,11 +25,12 @@ In this project Rancher desktop uses for kubernetes and Docker. This can be done
 
 Before setting up the cluster and pods make ensure to install these Prequisities. 
 
-1. Rancher desktop
-2. Install Go (version 1.23)
-3. Install Visual Studio Code
-3. Enable vs code extensions (YAML, kubernetes, Docker Extension Pack)
-4. Start Rancher Desktop
+1. Linux
+2. Rancher desktop or minikube
+3. Install Go (version 1.23)
+4. Install Visual Studio Code
+5. Enable vs code extensions (YAML, kubernetes, Docker Extension Pack, Makefile)
+6. Start Rancher Desktop
 ```bash
     a. When using Rancher Desktop make ensure to disable Traefik.
 ```
@@ -104,25 +105,40 @@ ii. make manifests
 ```
 (CRD can generate with desired versions removing the commented lines in manifests commands)
 
+## Steps - Edit /etc/hosts file
+This implementation based on hosting the gateway pod at hostname called "www.example.com". this testing part only applicable with the local setup.
+Traffic comes from localhost's 8080 port and gateway pod accept the traffic by port 80.
 
-## Steps - Apply custom resources and cluster role binding to the generated custom resource definition
+```bash
+i. sudo nano /etc/hosts
+
+ii. Add the desired hostname with the correct localhost ip-address(127.0.0.1) under "To allow the same kube context to work on the host and the container:" section
+
+iii. Add <localhost_ip_address> www.example.com
+
+iv. Enter ctrl + X to save the etc/hosts file.
+```
+
+## Steps - Apply custom resources and cluster role binding to the generated custom resource definition.
 ```bash
 i. cd ./examples/extension-server/project/apk-cr
 
 ii. kubectl apply -f .-n envoy-gateway-system
 ```
 
-## Steps - Check pods and services 
+## Steps - Check pods and services.
 ```bash
 i. kubectl get pods -n envoy-gateway-system
 
 ii. kubectl get svc -n envoy-gateway-system
 ```
+
 ## Steps - Check API 
 ```bash
 kubectl get apis -n envoy-gateway-system
 ```
-## Steps - Check HTTPRoute and backend correctly working
+
+## Steps - Check HTTPRoute and backend.
 a. Use Envoy gateway config dump to check whether configured HTTPRoutes applied successfully.
 
 ```bash
@@ -136,12 +152,13 @@ i. kubectl get svc -n envoy-gateway-system
 
 ii. kubectl port-forward -n envoy-gateway-system svc/<envoy_gateway_service> 8080:80
 ```
-c. Import this curl command to postman and send the request.
+c. First, import this curl command to postman and directly test the backend. 
+
 ```bash
 curl -v -H "Host: www.example.com" "http://localhost:8080/apk-http-route/api/v3/pet/findByStatus?status=available"
 ```
 
-## Steps - Edit server.go and redeploy extension server
+## Steps - Edit server.go and redeploy extension server.
 To extract the basePath or context path correctly from the applied API CR and map to the correct backend resource server.go needed to edit correctly.
 
 After editing the server.go correctly extension-server should redpoly to the kubernetes cluster.
@@ -155,7 +172,10 @@ ii. ./deploy-server.sh
 ```
 
 ## Steps - Invoke API
-a. port-forward to envoy-gateway-service
+curl command using to test the API request call to the API endpoint and check the correct backend response.
+
+a. port-forward to envoy-gateway service.
+
 ```bash
 i. kubectl get svc -n envoy-gateway-system
 
@@ -165,6 +185,16 @@ b. Import this curl command to postman and invoke the API.
 ```bash
 curl -v -H "Host: www.example.com" "http://localhost:8080/my-api/apk-http-route/api/v3/pet/findByStatus?status=available"
 ```
+## Steps - Enable Rate Limiting
+
+Rate limiting feature applied for this implementation only for Gateway level. Also rate limiting can enable for HTTPRoute level.
+
+Check more about rate limiting using Envoy Gateway: https://gateway.envoyproxy.io/contributions/design/rate-limit/
+
+```bash
+i. cd ./examples extension-server/rateLimiting-global
+
+ii. kubectl apply -f . -n envoy-gateway-system
 
 ## Steps- error checking 
 
@@ -187,6 +217,8 @@ Visual studio Code installation: https://code.visualstudio.com/download
 Envoy Gateway: https://gateway.envoyproxy.io/
 
 Envoy Gateway Extension Server: https://gateway.envoyproxy.io/v1.1/tasks/extensibility/extension-server/
+
+Envoy Gateway Rate limit design: https://gateway.envoyproxy.io/contributions/design/rate-limit/
 
 
 
