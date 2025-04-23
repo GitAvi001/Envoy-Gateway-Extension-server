@@ -90,14 +90,8 @@ ii. make manifests
 ```
 (CRD can generate with desired versions removing the commented lines in manifests commands)
 
-## Steps - Apply cluster role and cluster role binding to the generated CRD
-```bash
-i. cd ./examples/extension-server/project
 
-ii. kubectl apply apk-rbac.yaml -n envoy-gateway-system
-```
-
-## Steps - Apply custom resources
+## Steps - Apply custom resources and cluster role binding to the generated custom resource definition
 ```bash
 i. cd ./examples/extension-server/project/apk-cr
 
