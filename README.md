@@ -30,11 +30,14 @@ Before setting up the cluster and pods make ensure to install these Prequisities
 3. Install Visual Studio Code
 3. Enable vs code extensions (YAML, kubernetes, Docker Extension Pack)
 4. Start Rancher Desktop
+```bash
     a. When using Rancher Desktop make ensure to disable Traefik.
-       i.   Open Rancher Desktop main window.
-       ii.  Select Preferences tab 
-       iii. Disable 'Enable Traefik' under options field.
-
+```
+```bash
+    i.   Open Rancher Desktop main window.
+    ii.  Select Preferences tab 
+    iii. Disable 'Enable Traefik' under options field.
+```
 
 ## Steps - Setting up the pods
 
