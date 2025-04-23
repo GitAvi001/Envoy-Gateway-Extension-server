@@ -1,3 +1,22 @@
+---
+apiVersion: dp.wso2.com/v1alpha1
+kind: API
+metadata:
+  name: my-api
+  namespace: envoy-gateway-system
+spec:
+  apiName: my-api
+  apiType: "REST"
+  apiVersion: 1.0.0
+  basePath: /my-api/1.0.0
+  definitionPath: /api-definition
+  organization: example-org
+  production:
+    - httpRouteRefs:
+        - apk-http-route
+  isDefaultVersion: false
+  systemAPI: false
+
 # ---
 # apiVersion: example.extensions.io/v1alpha1
 # kind: API
@@ -17,25 +36,6 @@
 #   isDefaultVersion: false
 #   systemAPI: false
 
-
----
-apiVersion: dp.wso2.com/v1alpha1
-kind: API
-metadata:
-  name: my-api
-  namespace: envoy-gateway-system
-spec:
-  apiName: my-api
-  apiType: "REST"
-  apiVersion: 1.0.0
-  basePath: /my-api/1.0.0
-  definitionPath: /api-definition
-  organization: example-org
-  production:
-    - httpRouteRefs:
-        - apk-http-route
-  isDefaultVersion: false
-  systemAPI: false
 
 # ---
 # apiVersion: dp.wso2.com/v1alpha2

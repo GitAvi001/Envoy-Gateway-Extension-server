@@ -8,7 +8,7 @@ spec:
   apiName: sse-api
   apiType: "SSE"
   apiVersion: 1.0.0
-  basePath: /sse/time-stream
+  basePath: /sse/stream-1
   definitionPath: /api-definition
   organization: example-org
   production:
