@@ -1,0 +1,8 @@
+bash command to generate jwt token 
+------------------------------------
+TOKEN=$(curl -s https://raw.githubusercontent.com/envoyproxy/gateway/main/examples/kubernetes/jwt/with-different-claim.jwt)
+
+
+decode jwt token ensuring correctly 
+------------------------------------
+#echo "$TOKEN" | cut -d '.' -f2 - | base64 --decode
