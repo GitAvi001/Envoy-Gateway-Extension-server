@@ -50,11 +50,6 @@ spec:
             group: dp.wso2.com
             kind: API
             name: my-api
-        # - type: URLRewrite
-        #   urlRewrite:
-        #     path:
-        #       type: ReplacePrefixMatch
-        #       replacePrefixMatch: /api/v3/
       backendRefs:
         - group: ""
           kind: Service
@@ -76,7 +71,7 @@ spec:
 #     - backendRefs:
 #         - group: ""
 #           kind: Service
-#           name: apk-backend  # Changed from "backend"
+#           name: apk-backend 
 #           port: 8080
 #           weight: 1
 #       matches:
@@ -88,4 +83,4 @@ spec:
 #           extensionRef:
 #             group: dp.wso2.com
 #             kind: API
-#             name: apk-api  # Assuming this matches your intended API CR
+#             name: apk-api  # matches intended API CR
