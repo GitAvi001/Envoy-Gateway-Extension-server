@@ -14,7 +14,7 @@ build: generate manifests
 	mkdir -p bin
 	CGO_ENABLED=0 go build -o bin/extension-server ./cmd/extension-server
 
-#2. make image to tag the imagea and push the locally build image to docker hub. 
+#2. make image to tag the image and push the locally build image to docker hub. 
 image: build
 	docker build -t extension-server:latest1 -f tools/docker/extension-server/Dockerfile .
 	docker tag extension-server:latest1 avidocker692/extension-server:latest1
@@ -26,9 +26,10 @@ generate: $(tools/controller-gen)
 # Use manifests-combined as the default manifests target
 manifests: manifests-combined
 
-# manifests: manifests-v1alpha1
 
 #remove the comment lines to generate desired CRD 
+# manifests: manifests-v1alpha1
+
 # manifests: manifests-v1alpha2
 
 # manifests: manifests-v1alpha3
@@ -37,6 +38,7 @@ manifests: manifests-combined
 
 # manifests: $(tools/controller-gen)
 # 	$(tools/controller-gen) crd:allowDangerousTypes=true paths="./..." output:crd:artifacts:config=charts/extension-server/crds/generated
+
 
 #3. make manifests commands to generate CRDs
 # Generate a single CRD only for v1alpha1 version

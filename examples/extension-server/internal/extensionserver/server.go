@@ -21,7 +21,7 @@ import (
 
 type Server struct {
 	pb.UnimplementedEnvoyGatewayExtensionServer
-	
+
 	log *slog.Logger
 }
 
@@ -55,7 +55,7 @@ func (s *Server) PostRouteModify(ctx context.Context, req *pb.PostRouteModifyReq
 			httpRouteName = api.Spec.Production[0].HTTPRouteRefs[0]
 		}
 		s.log.Info(fmt.Sprintf("Extracted basePath: %s and HTTPRoute name: %s from API: %s", basePath, httpRouteName, api.ObjectMeta.Name))
-		break // Assuming we only need the first matching API CR
+		break //matching API CR
 	}
 
 	if basePath == "" || httpRouteName == "" {
